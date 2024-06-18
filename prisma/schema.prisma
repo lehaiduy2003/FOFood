@@ -13,22 +13,117 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model UserAccount {
-  id                String           @id @default(cuid())
-  isRestaurantOwner Boolean          @default(false)
-  isAdministrator   Boolean          @default(false)
-  userId            String
-  UserInformation   UserInformation? @relation(fields: [userId], references: [id])
+model Account {
+  id                String  @id @default(cuid())
+  userId            String  @map("user_id")
+  type              String
+  provider          String
+  providerAccountId String  @map("provider_account_id")
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
 }
 
-model UserInformation {
-  id          String        @id @default(cuid())
-  userId      String        @unique
-  name        String?
-  phone       String        @unique
-  email       String?       @unique
-  address     String?
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime?     @updatedAt
-  UserAccount UserAccount[]
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique @map("session_token")
+  userId       String   @map("user_id")
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime? @updatedAt
+  email         String?   @unique
+  accountType   String?   @map("account_type")
+  emailVerified DateTime? @map("email_verified")
+  password      String?
+  image         String?
+  payments      Payment[]
+  accounts      Account[]
+  sessions      Session[]
+
+  @@map("users")
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verificationtokens")
+}
+
+model Payment {
+  id             String @id @default(cuid())
+  type           String
+  cardNumber     String
+  CVV            String
+  expirationDate String
+  userId         String
+  user           User   @relation(fields: [userId], references: [id])
+}
+
+model Restaurant {
+  id                  String             @id @default(cuid())
+  name                String
+  address             String
+  registerAt          DateTime           @default(now())
+  updatedAt           DateTime?          @updatedAt
+  restaurantId        String
+  restaurantLicense   RestaurantLicense?
+  menu                MenuDetail[]
+  restaurantLicenseId String
+}
+
+model RestaurantLicense {
+  id                    String     @id @default(cuid())
+  businessLicense       String
+  certificateFoodSafety String
+  chefCertificate       String
+  restaurantId          String     @unique
+  restaurant            Restaurant @relation(fields: [restaurantId], references: [id])
+}
+
+model MenuDetail {
+  restaurantId String
+  restarant    Restaurant @relation(fields: [restaurantId], references: [id])
+  menuId       String
+  menu         Menu       @relation(fields: [menuId], references: [id])
+  name         String
+  description  String
+
+  @@id([restaurantId, menuId])
+}
+
+model Menu {
+  id        String       @id @default(cuid())
+  detail    MenuDetail[]
+  beverages Beverage[]
+}
+
+model Beverage {
+  id          String  @id @default(cuid())
+  name        String
+  price       Float
+  description String
+  image       String
+  status      Boolean
+  menuId      String
+  menu        Menu    @relation(fields: [menuId], references: [id])
 }
