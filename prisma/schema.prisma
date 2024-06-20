@@ -52,6 +52,7 @@ model User {
   accountType   String?   @map("account_type")
   emailVerified DateTime? @map("email_verified")
   password      String?
+  otp           String?
   image         String?
   payments      Payment[]
   accounts      Account[]
