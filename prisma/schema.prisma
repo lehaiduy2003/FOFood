@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -26,10 +20,10 @@ model Account {
   scope             String?
   id_token          String? @db.Text
   session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
+  @@index([userId], map: "accounts_user_id_fkey")
   @@map("accounts")
 }
 
@@ -40,6 +34,7 @@ model Session {
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@index([userId], map: "sessions_user_id_fkey")
   @@map("sessions")
 }
 
@@ -49,11 +44,11 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime? @updatedAt
   email         String?   @unique
-  accountType   String?   @map("account_type")
   emailVerified DateTime? @map("email_verified")
   password      String?
-  otp           String?
   image         String?
+  accountType   String?   @map("account_type")
+  otp           String?
   payments      Payment[]
   accounts      Account[]
   sessions      Session[]
@@ -78,6 +73,8 @@ model Payment {
   expirationDate String
   userId         String
   user           User   @relation(fields: [userId], references: [id])
+
+  @@index([userId], map: "Payment_userId_fkey")
 }
 
 model Restaurant {
@@ -87,9 +84,9 @@ model Restaurant {
   registerAt          DateTime           @default(now())
   updatedAt           DateTime?          @updatedAt
   restaurantId        String
-  restaurantLicense   RestaurantLicense?
-  menu                MenuDetail[]
   restaurantLicenseId String
+  menu                MenuDetail[]
+  restaurantLicense   RestaurantLicense?
 }
 
 model RestaurantLicense {
@@ -103,19 +100,20 @@ model RestaurantLicense {
 
 model MenuDetail {
   restaurantId String
-  restarant    Restaurant @relation(fields: [restaurantId], references: [id])
   menuId       String
-  menu         Menu       @relation(fields: [menuId], references: [id])
   name         String
   description  String
+  menu         Menu       @relation(fields: [menuId], references: [id])
+  restarant    Restaurant @relation(fields: [restaurantId], references: [id])
 
   @@id([restaurantId, menuId])
+  @@index([menuId], map: "MenuDetail_menuId_fkey")
 }
 
 model Menu {
   id        String       @id @default(cuid())
-  detail    MenuDetail[]
   beverages Beverage[]
+  detail    MenuDetail[]
 }
 
 model Beverage {
@@ -127,4 +125,6 @@ model Beverage {
   status      Boolean
   menuId      String
   menu        Menu    @relation(fields: [menuId], references: [id])
+
+  @@index([menuId], map: "Beverage_menuId_fkey")
 }
