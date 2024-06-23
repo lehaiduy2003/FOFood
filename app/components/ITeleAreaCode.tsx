@@ -15,6 +15,7 @@ const ITelephoneAreaCode = ({ items }: Props) => {
     }
     return (
         <>
+            {/* Using daisyui dropdown component */}
             <div className="dropdown dropdown-right join-item">
                 <div tabIndex={0} role="button" className="btn m-1 bg-white hover:bg-white">{item}</div>
                 <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">

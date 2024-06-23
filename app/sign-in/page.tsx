@@ -20,9 +20,11 @@ const LoginPage = () => {
                 <label className='text-3xl font-bold text-center mb-5'>Sign in</label>
                 <InputForm id="container" action="/sign-in">
                     <>
+                        {/*sign in with phone number and OTP method*/}
                         <TranditionnalSignIn areaCodes={areaCodes} />
                         <button type='submit' className="btn btn-primary btn-sm mt-5 w-2/3 bg-blue-500 hover:bg-blue-700">Sign in</button>
                         <label className="divider divider-neutral">OR</label>
+                        {/*sign in with social media method (google, facebook,...)*/}
                         <MediaSignIn />
                     </>
                 </InputForm>
