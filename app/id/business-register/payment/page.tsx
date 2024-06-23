@@ -1,14 +1,14 @@
 import InputForm from "@/app/components/InputForm"
-import SignUp from "@/app/components/SignUp"
+import SetUpPayment from "@/app/components/SetUpPayment"
 
-const InformationPage = () => {
+const PaymentPage = () => {
     return (
         <div className="flex justify-center">
             <InputForm id="container" width="w-full" action="/id/business-register/information">
-                <SignUp />
+                <SetUpPayment />
             </InputForm>
         </div>
     )
 }
 
-export default InformationPage
+export default PaymentPage
