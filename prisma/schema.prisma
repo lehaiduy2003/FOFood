@@ -39,15 +39,17 @@ model Session {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime? @updatedAt
-  email         String?   @unique
-  emailVerified DateTime? @map("email_verified")
+  id            String      @id @default(cuid())
+  name          String?     @db.VarChar(255)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime?   @updatedAt
+  email         String?     @unique
+  phone         String?     @unique @db.VarChar(20)
+  emailVerified DateTime?   @map("email_verified")
   password      String?
+  feebbacks     feedbacks[]
   image         String?
-  accountType   String?   @map("account_type")
+  accountType   String?     @map("account_type")
   otp           String?
   payments      Payment[]
   accounts      Account[]
@@ -66,13 +68,14 @@ model VerificationToken {
 }
 
 model Payment {
-  id             String @id @default(cuid())
+  id             String  @id @default(cuid())
   type           String
   cardNumber     String
   CVV            String
   expirationDate String
+  qrCode         String?
   userId         String
-  user           User   @relation(fields: [userId], references: [id])
+  user           User    @relation(fields: [userId], references: [id])
 
   @@index([userId], map: "Payment_userId_fkey")
 }
@@ -83,6 +86,7 @@ model Restaurant {
   address             String
   registerAt          DateTime           @default(now())
   updatedAt           DateTime?          @updatedAt
+  rate                Float?
   restaurantId        String
   restaurantLicenseId String
   menu                MenuDetail[]
@@ -117,14 +121,28 @@ model Menu {
 }
 
 model Beverage {
-  id          String  @id @default(cuid())
+  id          String      @id @default(cuid())
   name        String
   price       Float
   description String
   image       String
   status      Boolean
+  feedbacks   feedbacks[]
   menuId      String
-  menu        Menu    @relation(fields: [menuId], references: [id])
+  menu        Menu        @relation(fields: [menuId], references: [id])
 
   @@index([menuId], map: "Beverage_menuId_fkey")
+}
+
+model feedbacks {
+  id         String   @id @default(cuid())
+  userId     String
+  beverageId String
+  rate       Float
+  comment    String?
+  user       User     @relation(fields: [userId], references: [id])
+  beverage   Beverage @relation(fields: [beverageId], references: [id])
+
+  @@index([userId], map: "feedbacks_userId_fkey")
+  @@index([beverageId], map: "feedbacks_restaurantId_fkey")
 }
