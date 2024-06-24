@@ -32,7 +32,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "app/configs/envdeclare.d.ts"
+    "app/envdeclare.d.ts"
   ],
   "exclude": [
     "node_modules"
