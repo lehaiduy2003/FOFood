@@ -1,14 +1,15 @@
-import { GoogleLogin } from '@react-oauth/google';
+import { GoogleLogin } from "@react-oauth/google";
 const MediaSignIn = () => {
-    return (
-        <GoogleLogin
-            onSuccess={credentialResponse => {
-                console.log(credentialResponse);
-            }} onError={() => {
-                console.log("Error");
-            }}
-        />
-    )
-}
+  return (
+    <GoogleLogin
+      onSuccess={(credentialResponse) => {
+        console.log(credentialResponse);
+      }}
+      onError={() => {
+        console.log("Error");
+      }}
+    />
+  );
+};
 
-export default MediaSignIn
+export default MediaSignIn;

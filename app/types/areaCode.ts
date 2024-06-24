@@ -1,4 +1,4 @@
 export type AreaCode = {
-    code: string,
-    country: string
-}
+  code: string;
+  country: string;
+};
