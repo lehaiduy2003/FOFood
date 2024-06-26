@@ -124,8 +124,8 @@ model Beverage {
   id          String      @id @default(cuid())
   name        String
   price       Float
-  description String
-  image       String
+  description String?
+  image       String?
   status      Boolean
   feedbacks   feedbacks[]
   menuId      String
