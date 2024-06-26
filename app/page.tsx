@@ -1,12 +1,9 @@
 "use client";
 
+import useFetchData from "./hooks/useFetchData";
+
 export default function Home() {
-  const testApi = async () => {
-    fetch("/api/home")
-      .then((res) => res.json())
-      .then((data) => console.log(data))
-      .catch();
-  };
+  const data = useFetchData("/api/home");
 
   return (
     <>
