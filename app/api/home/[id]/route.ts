@@ -1,9 +1,6 @@
-import { useRouter } from "next/router";
-
-export function GET() {
-  const router = useRouter();
+export function GET(req: Request, { params }: { params: { id: string } }) {
   return Response.json({
     status: 200,
-    body: { message: `Hello ${router.query.id}` },
+    statusText: { message: `Hello ${params.id}` },
   });
 }
