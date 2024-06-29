@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["relationJoins"]
 }
 
 datasource db {
@@ -47,13 +48,14 @@ model User {
   phone         String?     @unique @db.VarChar(20)
   emailVerified DateTime?   @map("email_verified")
   password      String?
-  feebbacks     feedbacks[]
   image         String?
   accountType   String?     @map("account_type")
   otp           String?
+  restaurant    Restaurant?
   payments      Payment[]
   accounts      Account[]
   sessions      Session[]
+  orders        Order[]
 
   @@map("users")
 }
@@ -78,19 +80,22 @@ model Payment {
   user           User    @relation(fields: [userId], references: [id])
 
   @@index([userId], map: "Payment_userId_fkey")
+  @@map("payments")
 }
 
 model Restaurant {
-  id                  String             @id @default(cuid())
-  name                String
-  address             String
-  registerAt          DateTime           @default(now())
-  updatedAt           DateTime?          @updatedAt
-  rate                Float?
-  restaurantId        String
-  restaurantLicenseId String
-  menu                MenuDetail[]
-  restaurantLicense   RestaurantLicense?
+  id                String             @id @default(cuid())
+  name              String
+  address           String
+  registerAt        DateTime?          @default(now())
+  updatedAt         DateTime?          @updatedAt
+  rate              Float?
+  userId            String             @unique
+  user              User               @relation(fields: [userId], references: [id])
+  menu              Menu?
+  restaurantLicense RestaurantLicense?
+
+  @@map("restaurants")
 }
 
 model RestaurantLicense {
@@ -100,24 +105,17 @@ model RestaurantLicense {
   chefCertificate       String
   restaurantId          String     @unique
   restaurant            Restaurant @relation(fields: [restaurantId], references: [id])
-}
 
-model MenuDetail {
-  restaurantId String
-  menuId       String
-  name         String
-  description  String
-  menu         Menu       @relation(fields: [menuId], references: [id])
-  restarant    Restaurant @relation(fields: [restaurantId], references: [id])
-
-  @@id([restaurantId, menuId])
-  @@index([menuId], map: "MenuDetail_menuId_fkey")
+  @@map("restaurantlicenses")
 }
 
 model Menu {
-  id        String       @id @default(cuid())
-  beverages Beverage[]
-  detail    MenuDetail[]
+  id           String     @id @default(cuid())
+  beverages    Beverage[]
+  restaurantId String     @unique
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
+
+  @@map("menus")
 }
 
 model Beverage {
@@ -126,23 +124,38 @@ model Beverage {
   price       Float
   description String?
   image       String?
-  status      Boolean
-  feedbacks   feedbacks[]
+  status      Boolean?    @default(true)
+  rate        Float?
+  orderCount  Int?
   menuId      String
   menu        Menu        @relation(fields: [menuId], references: [id])
+  feedbacks   feedbacks[]
 
   @@index([menuId], map: "Beverage_menuId_fkey")
+  @@map("beverages")
+}
+
+model Order {
+  id       String      @id @default(cuid())
+  userId   String
+  quantity Int
+  status   String
+  feedback feedbacks[]
+  user     User        @relation(fields: [userId], references: [id])
+
+  @@index([userId], map: "orders_userId_fkey")
+  @@map("orders")
 }
 
 model feedbacks {
-  id         String   @id @default(cuid())
-  userId     String
   beverageId String
+  orderId    String
   rate       Float
   comment    String?
-  user       User     @relation(fields: [userId], references: [id])
+  order      Order    @relation(fields: [orderId], references: [id])
   beverage   Beverage @relation(fields: [beverageId], references: [id])
 
-  @@index([userId], map: "feedbacks_userId_fkey")
+  @@id([beverageId, orderId])
   @@index([beverageId], map: "feedbacks_restaurantId_fkey")
+  @@map("feedbacks")
 }
