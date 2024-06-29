@@ -1,7 +1,7 @@
 "use client";
-import InputForm from "../components/InputForm";
-import MediaSignIn from "../components/MediaSignIn";
-import TranditionnalSignIn from "../components/TraditionalSignIn";
+import InputForm from "../components/onboarding/InputForm";
+import MediaSignIn from "../components/onboarding/sign-in/MediaSignIn";
+import TranditionnalSignIn from "../components/onboarding/sign-in/TraditionalSignIn";
 import { AreaCode } from "../types/areaCode";
 
 const LoginPage = () => {
