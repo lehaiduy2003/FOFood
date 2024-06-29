@@ -1,5 +1,5 @@
-import InputForm from "@/app/components/InputForm";
-import SetUpPayment from "@/app/components/SetUpPayment";
+import InputForm from "@/app/components/onboarding/InputForm";
+import SetUpPayment from "@/app/components/onboarding/sign-up/SetUpPayment";
 
 const PaymentPage = () => {
   return (

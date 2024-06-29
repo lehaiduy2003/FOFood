@@ -1,5 +1,5 @@
-import InputForm from "@/app/components/InputForm";
-import SignUp from "@/app/components/SignUp";
+import InputForm from "@/app/components/onboarding/InputForm";
+import SignUp from "@/app/components/onboarding/sign-up/SetUpInfor";
 
 const InformationPage = () => {
   return (
