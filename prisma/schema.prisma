@@ -4,8 +4,9 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider          = "mysql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
 model Account {
@@ -44,13 +45,15 @@ model User {
   name          String?     @db.VarChar(255)
   createdAt     DateTime    @default(now())
   updatedAt     DateTime?   @updatedAt
+  username      String?     @unique
   email         String?     @unique
-  phone         String?     @unique @db.VarChar(20)
+  phone         String      @unique @db.VarChar(20)
   emailVerified DateTime?   @map("email_verified")
   password      String?
   image         String?
-  accountType   String?     @map("account_type")
+  accountType   String?     @default("user") @map("account_type")
   otp           String?
+  status        Boolean?    @default(true)
   restaurant    Restaurant?
   payments      Payment[]
   accounts      Account[]
@@ -77,7 +80,7 @@ model Payment {
   expirationDate String
   qrCode         String?
   userId         String
-  user           User    @relation(fields: [userId], references: [id])
+  user           User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@index([userId], map: "Payment_userId_fkey")
   @@map("payments")
@@ -87,12 +90,14 @@ model Restaurant {
   id                String             @id @default(cuid())
   name              String
   address           String
+  image             String?
+  description       String?
   registerAt        DateTime?          @default(now())
   updatedAt         DateTime?          @updatedAt
   rate              Float?
   userId            String             @unique
-  user              User               @relation(fields: [userId], references: [id])
-  menu              Menu?
+  user              User               @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  beverages         Beverage[]
   restaurantLicense RestaurantLicense?
 
   @@map("restaurants")
@@ -104,58 +109,56 @@ model RestaurantLicense {
   certificateFoodSafety String
   chefCertificate       String
   restaurantId          String     @unique
-  restaurant            Restaurant @relation(fields: [restaurantId], references: [id])
+  restaurant            Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@map("restaurantlicenses")
 }
 
-model Menu {
-  id           String     @id @default(cuid())
-  beverages    Beverage[]
-  restaurantId String     @unique
-  restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
-
-  @@map("menus")
-}
-
 model Beverage {
-  id          String      @id @default(cuid())
-  name        String
-  price       Float
-  description String?
-  image       String?
-  status      Boolean?    @default(true)
-  rate        Float?
-  orderCount  Int?
-  menuId      String
-  menu        Menu        @relation(fields: [menuId], references: [id])
-  feedbacks   feedbacks[]
+  id           String         @unique @default(cuid())
+  name         String
+  price        Float
+  createdAt    DateTime?      @default(now())
+  updatedAt    DateTime?      @updatedAt
+  description  String?
+  image        String?
+  status       Boolean?       @default(true)
+  rate         Float?
+  orderCount   Int?
+  restaurantId String
+  restaurant   Restaurant     @relation(fields: [restaurantId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  orderDetails OrderDetails[]
 
-  @@index([menuId], map: "Beverage_menuId_fkey")
+  @@id([restaurantId, name])
+  @@index([restaurantId], map: "Beverage_restaurantId_fkey")
   @@map("beverages")
 }
 
 model Order {
-  id       String      @id @default(cuid())
-  userId   String
-  quantity Int
-  status   String
-  feedback feedbacks[]
-  user     User        @relation(fields: [userId], references: [id])
+  id            String         @id @default(cuid())
+  userId        String
+  status        Boolean        @default(false)
+  paymentMethod String         @default("cash")
+  total         Float?
+  orderDetails  OrderDetails[]
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@index([userId], map: "orders_userId_fkey")
   @@map("orders")
 }
 
-model feedbacks {
+model OrderDetails {
   beverageId String
   orderId    String
-  rate       Float
+  quantity   Int
+  orderAt    DateTime  @default(now())
+  doneAt     DateTime?
+  rate       Float?
   comment    String?
-  order      Order    @relation(fields: [orderId], references: [id])
-  beverage   Beverage @relation(fields: [beverageId], references: [id])
+  order      Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  beverage   Beverage  @relation(fields: [beverageId], references: [id], onDelete: Cascade)
 
   @@id([beverageId, orderId])
   @@index([beverageId], map: "feedbacks_restaurantId_fkey")
-  @@map("feedbacks")
+  @@map("orderDetails")
 }
