@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-export const useFetchData = (url: string) => {
+export const UseFetchData = (url: string) => {
   const [data, setData] = useState(null);
 
   useEffect(() => {
@@ -8,10 +8,11 @@ export const useFetchData = (url: string) => {
       try {
         const response = await fetch(url, { method: "GET" });
         const jsonData = await response.json();
-        console.log(jsonData);
+
         setData(jsonData);
       } catch (error) {
         console.error(error);
+        setData(null);
       }
     };
 
