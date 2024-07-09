@@ -18,7 +18,9 @@ export const route = (
   }
 };
 export async function GET(request: NextRequest) {
-  const { userId } = await request.json();
+  const userId = request.nextUrl.pathname.split("/")[2];
+  console.log(userId);
+
   try {
     const allFoods = await prisma.beverage.findMany({
       where: {
@@ -75,7 +77,7 @@ export async function DELETE(request: NextRequest) {
   }
 }
 export async function POST(request: NextRequest) {
-  const { id, name, price, image, description, restaurantId, status } =
+  const { name, price, image, description, restaurantId, status } =
     await request.json();
   try {
     const createFood = await prisma.beverage.create({
@@ -89,7 +91,7 @@ export async function POST(request: NextRequest) {
       },
     });
     return Response.json(
-      { createFood, message: `created ${id}` },
+      { createFood, message: `created ${name}` },
       {
         status: 200,
         headers: {
@@ -99,7 +101,7 @@ export async function POST(request: NextRequest) {
       }
     );
   } catch (error) {
-    //console.error(error);
+    console.error(error);
     return Response.json(
       {
         error_code: USER_ALREADY_EXIST.code,
