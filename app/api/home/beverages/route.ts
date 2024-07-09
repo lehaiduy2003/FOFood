@@ -2,7 +2,7 @@ import prisma from "@/prisma/db";
 
 export async function GET() {
   try {
-    const allFoods = await prisma.beverage.findMany({
+    const foods = await prisma.beverage.findMany({
       take: 20,
       orderBy: [
         {
@@ -16,8 +16,8 @@ export async function GET() {
         },
       ],
     });
-    console.log(allFoods);
-    return Response.json(allFoods, { status: 200, statusText: "OK" });
+    //console.log(foods);
+    return Response.json(foods, { status: 200, statusText: "OK" });
   } catch (error) {
     console.error(error);
     return Response.json({
