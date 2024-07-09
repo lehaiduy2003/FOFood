@@ -2,34 +2,35 @@
 
 import Carousel from "./components/Carousel";
 import Footer from "./components/Footer";
+import ItemsShowCase from "./components/homepage/ItemsShowCase";
 import NavBar from "./components/NavBar";
-import Food from "./components/homepage/Food";
-import { useFetchData } from "./hooks/useFetchData";
+import { UseFetchData } from "./hooks/useFetchData";
+import { HomepageItem } from "./types/homeItem";
 
-interface Props {
-  name: string;
+interface FoodProps extends HomepageItem {
   price: number;
   description?: string;
-  image?: string;
-  rate?: number;
   orderCount?: number;
-  // Include other properties as needed
 }
-function UseFetchData(url: string): Props[] | null {
-  return useFetchData(url);
+interface RestaurantProps extends HomepageItem {
+  user: { name: string };
+  address: string;
+}
+function useFetchData<T>(url: string): T[] | null {
+  return UseFetchData(url);
 }
 
 export default function Home() {
-  const data = UseFetchData("/api/home");
+  const foods = useFetchData<FoodProps>("/api/home/beverages");
+  const restaurants = useFetchData<RestaurantProps>("/api/home/restaurants");
 
   return (
     <>
       <NavBar />
       <Carousel />
-      <main className="flex flex-row flex-wrap justify-center">
-        {data
-          ? data.map((item, index) => <Food key={index} item={item} />)
-          : null}
+      <main className="flex flex-col">
+        <ItemsShowCase items={foods || []} title="Best Sellers" />
+        <ItemsShowCase items={restaurants || []} title="Best Restaurants" />
       </main>
       <Footer />
     </>
