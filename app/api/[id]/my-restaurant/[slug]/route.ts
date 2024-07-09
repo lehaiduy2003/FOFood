@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
       where: {
         restaurant: {
           user: {
-            id: userId, //"clxzkzq7c000010rj9ot7wikb"
+            id: userId,
           },
         },
       },
