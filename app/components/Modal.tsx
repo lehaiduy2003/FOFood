@@ -1,19 +1,34 @@
+import { useEffect, useState } from "react";
 import useDialog from "../hooks/useDialog";
-import { UseFetchData } from "../hooks/useFetchData";
 import { modal } from "../types/modal";
 
-const hostname = process.env.HOSTNAME || "localhost";
-const port = process.env.PORT || 3000;
-const foodData: any = (id: string) => {
-  return UseFetchData(`http://${hostname}:${port}/api/${id}`);
-};
+const Modal = ({ data, isOpened, onOpen, onClose }: modal) => {
+  //console.log(data.id);
 
-const Modal = ({ text, data, isOpened, onOpen, onClose }: modal) => {
+  const [quantity, setQuantity] = useState(1);
+  const [total, setTotal] = useState(data.price);
+
+  function increaseQuantity() {
+    setQuantity(quantity + 1);
+    setTotal(data.price * quantity);
+  }
+
+  function decreaseQuantity() {
+    setQuantity(quantity - 1);
+    setTotal(data.price * quantity);
+  }
+
+  // Reset quantity and total when modal is reopened
+  useEffect(() => {
+    if (isOpened) {
+      setQuantity(1); // Reset quantity to initial value
+      setTotal(data.price); // Reset total to initial value (or calculate based on initial quantity)
+    }
+  }, [isOpened, data.price]); // Dependency array includes isOpen to trigger effect when it changes
+
   const dialogRef = useDialog(isOpened, onClose);
 
-  const beverage = foodData(data.id);
-
-  console.log(beverage);
+  //console.log(beverage);
 
   return (
     <>
@@ -21,32 +36,51 @@ const Modal = ({ text, data, isOpened, onOpen, onClose }: modal) => {
         {isOpened ? (
           <span className="loading loading-spinner loading-xs"></span>
         ) : (
-          text
+          "Order"
         )}
       </button>
       {isOpened && (
         <dialog ref={dialogRef} className="modal">
-          <div className="modal-box w-full h-fit">
-            <h3 className="font-bold text-lg">{beverage.food.name}</h3>
-            <p className="py-4 italic">
-              restaurant:{" "}
-              {beverage.food.restaurant.name &&
-                `${beverage.food.restaurant.name}`}
-            </p>
-            <p className="mb-2">
-              descripton:{" "}
-              {beverage.food.descripton !== null
-                ? `${beverage.food.description}`
-                : "Không có mô tả món ăn"}
-            </p>
-            <p className="mb-2">
-              address:{" "}
-              {beverage.food.restaurant.address &&
-                `${beverage.food.restaurant.address}`}
-            </p>
+          <div className="modal-box h-fit">
+            <div className="card card-side bg-base-100 shadow-xl">
+              <figure>
+                <img
+                  src={
+                    data.image ||
+                    `https://st4.depositphotos.com/14953852/22772/v/450/depositphotos_227725020-stock-illustration-image-available-icon-flat-vector.jpg`
+                  }
+                  alt={data.name}
+                  className="max-h-28"
+                />
+              </figure>
+              <div className="card-body">
+                <h2 className="card-title">{data.name}</h2>
+                <p>{data.description && `${data.description}`}</p>
+                <p>{data.price} VND</p>
+                <div className="card-actions justify-end items-center">
+                  <button
+                    className={
+                      quantity <= 1
+                        ? "btn btn-sm btn-circle disabled cursor-not-allowed btn-disabled"
+                        : "btn btn-sm btn-circle"
+                    }
+                    onClick={decreaseQuantity}
+                  >
+                    -
+                  </button>
+                  <span>{quantity}</span>
+                  <button
+                    className="btn btn-sm btn-circle"
+                    onClick={increaseQuantity}
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+            </div>
             <div className="modal-action">
               <form
-                action={`/order/${beverage.food.id}`}
+                action={`/api/order/${data.id}`}
                 className="flex flex-col justify-center items-center w-full h-full"
               >
                 {/* if there is a button in form, it will close the modal */}
@@ -74,18 +108,8 @@ const Modal = ({ text, data, isOpened, onOpen, onClose }: modal) => {
                   name="phone"
                   placeholder="Your phone number"
                 ></input>
-                <select
-                  className="select select-bordered w-full"
-                  defaultValue={"default"}
-                >
-                  <option value={"default"} disabled>
-                    Choose a payment method
-                  </option>
-                  <option>Cash</option>
-                  <option>Online banking</option>
-                </select>
                 <button className="mt-3 btn w-full btn-primary" type="submit">
-                  Order
+                  {total} VND - Order
                 </button>
               </form>
             </div>
