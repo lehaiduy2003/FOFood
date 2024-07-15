@@ -15,22 +15,29 @@ interface FoodProps extends HomepageItem {
 interface RestaurantProps extends HomepageItem {
   user: { name: string };
   address: string;
+  beverages: FoodProps[];
 }
 function useFetchData<T>(url: string): T[] | null {
   return UseFetchData(url);
 }
 
 export default function Home() {
-  const foods = useFetchData<FoodProps>("/api/home/beverages");
-  const restaurants = useFetchData<RestaurantProps>("/api/home/restaurants");
+  const restaurants = useFetchData<RestaurantProps>("/api/home");
 
   return (
     <>
       <NavBar />
       <Carousel />
       <main className="flex flex-col">
-        <ItemsShowCase items={foods || []} title="Best Sellers" />
-        <ItemsShowCase items={restaurants || []} title="Best Restaurants" />
+        {restaurants
+          ? restaurants.map((restaurant, index) => (
+              <ItemsShowCase
+                key={index}
+                items={restaurant.beverages || []}
+                title={restaurant.name}
+              />
+            ))
+          : null}
       </main>
       <Footer />
     </>
