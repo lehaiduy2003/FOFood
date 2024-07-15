@@ -115,19 +115,19 @@ model RestaurantLicense {
 }
 
 model Beverage {
-  id           String         @unique @default(cuid())
+  id           String     @unique @default(cuid())
   name         String
   price        Float
-  createdAt    DateTime?      @default(now())
-  updatedAt    DateTime?      @updatedAt
+  createdAt    DateTime?  @default(now())
+  updatedAt    DateTime?  @updatedAt
   description  String?
   image        String?
-  status       Boolean?       @default(true)
+  status       Boolean?   @default(true)
   rate         Float?
   orderCount   Int?
   restaurantId String
-  restaurant   Restaurant     @relation(fields: [restaurantId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  orderDetails OrderDetails[]
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  orders       Order[]
 
   @@id([restaurantId, name])
   @@index([restaurantId], map: "Beverage_restaurantId_fkey")
@@ -135,30 +135,19 @@ model Beverage {
 }
 
 model Order {
-  id            String         @id @default(cuid())
-  userId        String
-  status        Boolean        @default(false)
-  paymentMethod String         @default("cash")
-  total         Float?
-  orderDetails  OrderDetails[]
-  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-
-  @@index([userId], map: "orders_userId_fkey")
-  @@map("orders")
-}
-
-model OrderDetails {
   beverageId String
-  orderId    String
+  userId     String
   quantity   Int
   orderAt    DateTime  @default(now())
   doneAt     DateTime?
+  status     String    @default("pending")
+  total      Float?
   rate       Float?
   comment    String?
-  order      Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
   beverage   Beverage  @relation(fields: [beverageId], references: [id], onDelete: Cascade)
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@id([beverageId, orderId])
+  @@id([beverageId, userId, orderAt])
   @@index([beverageId], map: "feedbacks_restaurantId_fkey")
   @@map("orderDetails")
 }
