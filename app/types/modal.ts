@@ -1,6 +1,11 @@
 export type modal = {
-  text: string;
-  data: any;
+  data: {
+    name: string;
+    price: number;
+    id: string;
+    image?: string;
+    description?: string;
+  };
   isOpened: boolean;
   onOpen: () => void;
   onClose: () => void;
