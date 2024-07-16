@@ -58,7 +58,6 @@ model User {
   payments      Payment[]
   accounts      Account[]
   sessions      Session[]
-  orders        Order[]
 
   @@map("users")
 }
@@ -135,19 +134,18 @@ model Beverage {
 }
 
 model Order {
+  name       String
   beverageId String
-  userId     String
+  phone      String
+  address    String
   quantity   Int
-  orderAt    DateTime  @default(now())
-  doneAt     DateTime?
-  status     String    @default("pending")
-  total      Float?
+  orderAt    DateTime @default(now())
+  status     String   @default("pending")
   rate       Float?
   comment    String?
-  beverage   Beverage  @relation(fields: [beverageId], references: [id], onDelete: Cascade)
-  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  beverage   Beverage @relation(fields: [beverageId], references: [id], onDelete: Cascade)
 
-  @@id([beverageId, userId, orderAt])
-  @@index([beverageId], map: "feedbacks_restaurantId_fkey")
-  @@map("orderDetails")
+  @@id([beverageId, phone, orderAt])
+  @@index([beverageId], map: "orders_restaurantId_fkey")
+  @@map("order")
 }
