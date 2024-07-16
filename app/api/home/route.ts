@@ -10,7 +10,24 @@ export async function GET() {
         address: true,
         rate: true,
         image: true,
-        beverages: true,
+        beverages: {
+          select: {
+            id: true,
+            name: true,
+            price: true,
+            image: true,
+            rate: true,
+            orderCount: true,
+          },
+          where: {
+            status: true,
+          },
+        },
+      },
+      where: {
+        user: {
+          status: true,
+        },
       },
       orderBy: {
         rate: "desc",
