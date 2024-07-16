@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Modal from "../Modal";
+import Modal from "../modal/Modal";
 
 interface Props {
   data: any;
@@ -33,27 +33,17 @@ const Item = ({ data }: Props) => {
         <span>
           {data.rate && `${data.rate}/5`}
           {data.orderCount && ` | ${data.orderCount}`}
-          {data.address && <p>{data.address}</p>}
         </span>
-        {data.price && (
-          <div className="flex flex-row justify-between items-center">
-            <span className="badge badge-neutral">{data.price} VNĐ</span>
-            <Modal
-              data={data}
-              onOpen={handleOpen}
-              onClose={handleClose}
-              isOpened={isOpened}
-            />
-            {/* <Link href={`/order/${data.id}`}>
-              <button
-                className="btn btn-outline btn-sm"
-                onClick={isOpened ? handleClose : handleOpen}
-              >
-                Order
-              </button>
-            </Link> */}
-          </div>
-        )}
+
+        <div className="flex flex-row justify-between items-center">
+          <span className="badge badge-neutral">{data.price} VNĐ</span>
+          <Modal
+            data={data}
+            onOpen={handleOpen}
+            onClose={handleClose}
+            isOpened={isOpened}
+          />
+        </div>
       </div>
     </div>
   );
