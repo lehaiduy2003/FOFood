@@ -18,7 +18,7 @@ interface RestaurantProps extends HomepageItem {
   beverages: FoodProps[];
 }
 function useFetchData<T>(url: string): T[] | null {
-  return UseFetchData(url);
+  return UseFetchData(url, "GET");
 }
 
 export default function Home() {

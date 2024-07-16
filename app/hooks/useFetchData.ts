@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 
-export const UseFetchData = (url: string) => {
+export const UseFetchData = (url: string, method: string) => {
   const [data, setData] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(url, { method: "GET" });
+        const response = await fetch(url, { method: method });
         const jsonData = await response.json();
 
         setData(jsonData);
@@ -17,7 +17,7 @@ export const UseFetchData = (url: string) => {
     };
 
     fetchData();
-  }, [url]);
+  }, [url, method]);
 
   return data;
 };
