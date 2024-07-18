@@ -8,7 +8,7 @@ export async function GET(
   try {
     const orders = await prisma.order.findMany({
       where: {
-        userId: params.id,
+        phone: params.id,
       },
     });
 
@@ -17,8 +17,8 @@ export async function GET(
     }
 
     const invoices = await Promise.all(
-      orders.map(async (order) => {
-        return await prisma.orderDetails.findMany({
+      orders.map(async () => {
+        return await prisma.order.findMany({
           select: {
             beverage: {
               select: {
@@ -27,15 +27,9 @@ export async function GET(
               },
             },
             orderAt: true,
-            order: {
-              select: {
-                status: true,
-                total: true,
-              },
-            },
           },
           where: {
-            orderId: order.id,
+            phone: params.id,
           },
         });
       })
