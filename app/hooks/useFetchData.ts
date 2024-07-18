@@ -1,4 +1,3 @@
-import { Base64 } from "js-base64";
 import { useEffect, useState } from "react";
 export const UseFetchData = (url: string, method: string) => {
   const [data, setData] = useState(null);
@@ -10,7 +9,7 @@ export const UseFetchData = (url: string, method: string) => {
           method: method,
           headers: {
             "Content-Type": "application/json",
-            apiKey: Base64.encode("Basic " + process.env.NEXT_PUBLIC_API_KEY),
+            apiKey: process.env.NEXT_PUBLIC_API_KEY,
           },
         });
         if (!response.ok) {
