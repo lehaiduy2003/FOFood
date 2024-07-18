@@ -15,10 +15,14 @@ const Item = ({ data }: Props) => {
     setIsOpened(false);
   };
   return (
-    <div className="card bg-base-100 w-60 h-96 shadow-xl my-2 mx-3 cursor-pointer">
+    <div
+      className="card bg-base-100 w-60 h-96 shadow-xl my-2 mx-3 cursor-pointer"
+      style={{ width: "240px", height: "400px" }}
+    >
       <figure className="">
         {data.image && (
           <img
+            style={{ width: "240px", height: "180px" }}
             src={
               data.image ||
               "https://st4.depositphotos.com/14953852/22772/v/450/depositphotos_227725020-stock-illustration-image-available-icon-flat-vector.jpg"
