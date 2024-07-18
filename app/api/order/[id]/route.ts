@@ -1,11 +1,25 @@
 import { FOOD_NOT_FOUND } from "@/app/constants/foodError";
 import prisma from "@/prisma/db";
 import { Beverage, Order } from "@prisma/client";
+import { Base64 } from "js-base64";
 import { NextRequest } from "next/server";
 
 export async function POST(request: NextRequest) {
+  console.log(request.nextUrl.pathname);
+
   const beverageId = request.nextUrl.pathname.split("/")[3];
+  console.log(beverageId);
+
   try {
+    const apiKey = request.headers.get("apiKey");
+    console.log(apiKey);
+
+    if (
+      !apiKey ||
+      Base64.decode(apiKey) !== "Basic " + process.env.NEXT_PUBLIC_API_KEY
+    ) {
+      return Response.json({ message: "unauthorized" }, { status: 401 });
+    }
     const req = await request.json();
     console.log(req);
 
@@ -40,11 +54,10 @@ export async function POST(request: NextRequest) {
         id: beverageId,
       },
       data: {
-        orderCount: {
-          increment: 1,
-        },
+        orderCount: beverage.orderCount + req.quantity,
       },
     });
+
     const invoice = {
       id: [order.phone, order.beverageId],
       beverage: beverage.name,
