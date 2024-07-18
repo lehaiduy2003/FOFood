@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { useState } from "react";
 import Modal from "../modal/Modal";
 
@@ -7,7 +8,10 @@ interface Props {
 
 const Item = ({ data }: Props) => {
   const [isOpened, setIsOpened] = useState(false);
-
+  const [orderCount, setOrderCount] = useState(data.orderCount);
+  const updateOrderCount = () => {
+    setOrderCount((orderCount: number) => orderCount + 1);
+  };
   const handleOpen = () => {
     setIsOpened(true);
   };
@@ -19,7 +23,19 @@ const Item = ({ data }: Props) => {
       className="card bg-base-100 w-60 h-96 shadow-xl my-2 mx-3 cursor-pointer"
       style={{ width: "240px", height: "400px" }}
     >
-      <figure className="">
+      <figure className="relative">
+        {data.rate && (
+          <span className="flex flex-row badge z-20 absolute top-0 right-0 mt-1 mr-1 opacity-80">
+            {data.rate}/5
+            <Image
+              src="/star.png"
+              alt="star"
+              width={15}
+              height={15}
+              className="ml-1"
+            />
+          </span>
+        )}
         {data.image && (
           <img
             style={{ width: "240px", height: "180px" }}
@@ -34,9 +50,8 @@ const Item = ({ data }: Props) => {
       </figure>
       <div className="card-body justify-between">
         <span className="card-title">{data.name}</span>
-        <span>
-          {data.rate && `${data.rate}/5`}
-          {data.orderCount && ` | ${data.orderCount}`}
+        <span className="italic">
+          {orderCount !== 0 ? ` ${orderCount} orders` : ""}
         </span>
 
         <div className="flex flex-row justify-between items-center">
@@ -45,6 +60,7 @@ const Item = ({ data }: Props) => {
             data={data}
             onOpen={handleOpen}
             onClose={handleClose}
+            updateOrderCount={updateOrderCount}
             isOpened={isOpened}
           />
         </div>
