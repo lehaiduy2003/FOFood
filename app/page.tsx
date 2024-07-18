@@ -22,7 +22,11 @@ function useFetchData<T>(url: string): T[] | null {
 }
 
 export default function Home() {
-  const restaurants = useFetchData<RestaurantProps>("/api/home");
+  // const apiKey = UseFetchApiKey();
+  // setLocalItem("apiKey", apiKey);
+  // console.log(getLocalItem("apiKey"));
+
+  const restaurants = useFetchData<RestaurantProps>("api/home");
 
   return (
     <>
