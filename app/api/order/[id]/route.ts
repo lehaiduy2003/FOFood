@@ -1,7 +1,6 @@
 import { FOOD_NOT_FOUND } from "@/app/constants/foodError";
 import prisma from "@/prisma/db";
 import { Beverage, Order } from "@prisma/client";
-import { Base64 } from "js-base64";
 import { NextRequest } from "next/server";
 
 export async function POST(request: NextRequest) {
@@ -14,10 +13,7 @@ export async function POST(request: NextRequest) {
     const apiKey = request.headers.get("apiKey");
     console.log(apiKey);
 
-    if (
-      !apiKey ||
-      Base64.decode(apiKey) !== "Basic " + process.env.NEXT_PUBLIC_API_KEY
-    ) {
+    if (!apiKey || apiKey !== process.env.NEXT_PUBLIC_API_KEY) {
       return Response.json({ message: "unauthorized" }, { status: 401 });
     }
     const req = await request.json();
