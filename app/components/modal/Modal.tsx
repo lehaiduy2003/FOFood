@@ -3,7 +3,7 @@ import useDialog from "../../hooks/useDialog";
 import { modal } from "../../types/modal";
 import ModalCard from "./ModalCard";
 import ModalForm from "./ModalForm";
-import { handleSubmit } from "./logic";
+import { handleSubmit } from "./modalFormSubmit";
 
 const Modal = ({ data, isOpened, onOpen, onClose }: modal) => {
   //console.log(data.id);
@@ -31,8 +31,8 @@ const Modal = ({ data, isOpened, onOpen, onClose }: modal) => {
     phone,
   };
 
-  const submitForm = (e: React.FormEvent<HTMLFormElement>) =>
-    handleSubmit(e, data.id, formData, onClose);
+  const submitForm = async (e: React.FormEvent<HTMLFormElement>) =>
+    await handleSubmit(data.id, formData, e, onClose);
 
   const changeName = (e: React.ChangeEvent<HTMLInputElement>) =>
     setName(e.target.value);
@@ -44,7 +44,7 @@ const Modal = ({ data, isOpened, onOpen, onClose }: modal) => {
     setPhone(e.target.value);
 
   const formFuncs = {
-    handleSubmit: submitForm,
+    submitForm,
     changeName,
     changePhone,
     changeAddress,
@@ -76,8 +76,8 @@ const Modal = ({ data, isOpened, onOpen, onClose }: modal) => {
           <div className="modal-box h-fit">
             <ModalCard
               quantity={quantity}
-              decreaseQuantity={() => decQuantity}
-              increaseQuantity={() => incQuantity}
+              decreaseQuantity={decQuantity}
+              increaseQuantity={incQuantity}
               price={data.price}
               description={data.description}
               name={data.name}
