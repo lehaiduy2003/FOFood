@@ -9,4 +9,5 @@ export type modal = {
   isOpened: boolean;
   onOpen: () => void;
   onClose: () => void;
+  updateOrderCount: () => void;
 };
