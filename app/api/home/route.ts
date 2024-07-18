@@ -1,14 +1,10 @@
 import prisma from "@/prisma/db";
-import { Base64 } from "js-base64";
 import { NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
   try {
     const apiKey = request.headers.get("apiKey");
-    if (
-      !apiKey ||
-      Base64.decode(apiKey) !== "Basic " + process.env.NEXT_PUBLIC_API_KEY
-    ) {
+    if (!apiKey || apiKey !== process.env.NEXT_PUBLIC_API_KEY) {
       return Response.json({
         status: 401,
         statusText: "Unauthorized",
