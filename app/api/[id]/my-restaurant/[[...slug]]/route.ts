@@ -6,15 +6,32 @@ export const route = (
   request: NextRequest,
   { params }: { params: { slug: string } }
 ) => {
-  switch (params.slug) {
-    case undefined || null:
-      return GET(request);
-    case "add-food":
-      return POST(request);
-    case "delete-food":
-      return DELETE(request);
-    case "update-food":
-      return PUT(request);
+  const apiKey = request.headers.get("apiKey");
+  if (apiKey !== process.env.API_KEY) {
+    return Response.json(
+      {
+        error_code: 401,
+        cause: "Unauthorized",
+      },
+      {
+        status: 401,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        statusText: "Unauthorized",
+      }
+    );
+  } else {
+    switch (params.slug) {
+      case undefined || null:
+        return GET(request);
+      case "add-food":
+        return POST(request);
+      case "delete-food":
+        return DELETE(request);
+      case "update-food":
+        return PUT(request);
+    }
   }
 };
 export async function GET(request: NextRequest) {
