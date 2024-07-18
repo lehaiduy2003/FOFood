@@ -5,7 +5,13 @@ import ModalCard from "./ModalCard";
 import ModalForm from "./ModalForm";
 import { handleSubmit } from "./modalFormSubmit";
 
-const Modal = ({ data, isOpened, onOpen, onClose }: modal) => {
+const Modal = ({
+  data,
+  isOpened,
+  onOpen,
+  onClose,
+  updateOrderCount,
+}: modal) => {
   //console.log(data.id);
 
   const [quantity, setQuantity] = useState(1);
@@ -32,7 +38,7 @@ const Modal = ({ data, isOpened, onOpen, onClose }: modal) => {
   };
 
   const submitForm = async (e: React.FormEvent<HTMLFormElement>) =>
-    await handleSubmit(data.id, formData, e, onClose);
+    await handleSubmit(data.id, formData, e, onClose, updateOrderCount);
 
   const changeName = (e: React.ChangeEvent<HTMLInputElement>) =>
     setName(e.target.value);
