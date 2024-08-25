@@ -1,16 +1,16 @@
-import InputForm from "@/app/components/onboarding/InputForm";
+import SignInForm from "@/app/components/onboarding/SignInForm";
 import SignUp from "@/app/components/onboarding/sign-up/SetUpInfor";
 
 const InformationPage = () => {
   return (
     <div className="flex justify-center">
-      <InputForm
+      <SignInForm
         id="container"
         width="w-full"
         action="/id/business-register/information"
       >
         <SignUp />
-      </InputForm>
+      </SignInForm>
     </div>
   );
 };

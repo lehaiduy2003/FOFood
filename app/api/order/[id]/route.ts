@@ -1,5 +1,6 @@
 import { FOOD_NOT_FOUND } from "@/app/constants/foodError";
 import prisma from "@/prisma/db";
+
 import { Beverage, Order } from "@prisma/client";
 import { NextRequest } from "next/server";
 
@@ -58,7 +59,7 @@ export async function POST(request: NextRequest) {
       id: [order.phone, order.beverageId],
       beverage: beverage.name,
       beverageImage: beverage.image,
-      date: order.orderAt,
+      orderAt: order.orderAt,
       total: beverage.price * order.quantity,
       orderStatus: order.status,
     };

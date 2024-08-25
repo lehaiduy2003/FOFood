@@ -6,7 +6,7 @@ interface Props {
   data: any;
 }
 
-const Item = ({ data }: Props) => {
+const ProductCard = ({ data }: Props) => {
   const [isOpened, setIsOpened] = useState(false);
   const [orderCount, setOrderCount] = useState(data.orderCount);
   const updateOrderCount = () => {
@@ -36,26 +36,22 @@ const Item = ({ data }: Props) => {
             />
           </span>
         )}
-        {data.image && (
-          <img
-            style={{ width: "240px", height: "180px" }}
-            src={
-              data.image ||
-              "https://st4.depositphotos.com/14953852/22772/v/450/depositphotos_227725020-stock-illustration-image-available-icon-flat-vector.jpg"
-            }
-            title={data.name}
-            alt={data.name}
-          />
-        )}
+
+        <img
+          style={{ width: "240px", height: "180px" }}
+          src={data.image || "emptyFoodImg.png"}
+          title={data.name}
+          alt={data.name}
+        />
       </figure>
       <div className="card-body justify-between">
-        <span className="card-title">{data.name}</span>
-        <span className="italic">
-          {orderCount !== 0 ? ` ${orderCount} orders` : ""}
-        </span>
+        <span className="card-title text-blue-900">{data.name}</span>
+        <span className="italic">{orderCount && ` ${orderCount} orders`}</span>
 
         <div className="flex flex-row justify-between items-center">
-          <span className="badge badge-neutral">{data.price} VNĐ</span>
+          <span className="badge badge-outline">
+            <div className="text-blue-900">{data.price} VNĐ</div>
+          </span>
           <Modal
             data={data}
             onOpen={handleOpen}
@@ -69,4 +65,4 @@ const Item = ({ data }: Props) => {
   );
 };
 
-export default Item;
+export default ProductCard;

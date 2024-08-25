@@ -1,5 +1,6 @@
 import { USER_ALREADY_EXIST, USER_NOT_FOUND } from "@/app/constants/userError";
 import prisma from "@/prisma/db";
+
 import { NextRequest } from "next/server";
 
 export const route = (

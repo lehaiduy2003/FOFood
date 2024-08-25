@@ -1,14 +1,9 @@
-import { GoogleLogin } from "@react-oauth/google";
+import { SignIn } from "./submitForm";
 const MediaSignIn = () => {
   return (
-    <GoogleLogin
-      onSuccess={(credentialResponse) => {
-        console.log(credentialResponse);
-      }}
-      onError={() => {
-        console.log("Error");
-      }}
-    />
+    <form action={SignIn}>
+      <button type="submit">Signin with Google</button>
+    </form>
   );
 };
 

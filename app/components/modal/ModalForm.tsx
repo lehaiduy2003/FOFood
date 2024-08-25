@@ -1,5 +1,3 @@
-import { useRouter } from "next/navigation";
-
 interface Props {
   id: string;
   onClose: () => void;
@@ -17,7 +15,6 @@ interface Props {
   };
 }
 const ModalForm = ({ onClose, total, formData, formFuncs }: Props) => {
-  const router = useRouter();
   return (
     <div className="modal-action">
       <form

@@ -6,7 +6,7 @@ interface Props {
   children?: React.ReactElement;
 }
 
-const InputForm = ({ id, width = "w=3/4", action, children }: Props) => {
+const SignInForm = ({ id, width = "w=3/4", action, children }: Props) => {
   return (
     <>
       <form
@@ -20,4 +20,4 @@ const InputForm = ({ id, width = "w=3/4", action, children }: Props) => {
   );
 };
 
-export default InputForm;
+export default SignInForm;

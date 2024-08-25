@@ -1,11 +1,11 @@
-import type { HomepageItem } from "@/app/types/homeItem";
-import Item from "./Item";
+import { Beverage } from "@prisma/client";
+import ProductCard from "./ui/ProductCard";
 
 interface Props {
-  items: HomepageItem[];
+  items: Beverage[];
   title: string;
 }
-const ItemsShowCase = ({ items, title }: Props) => {
+const HomepageShowcase = ({ items, title }: Props) => {
   return (
     <>
       <h1 className="text-3xl font-bold text-start mt-10 mb-5 ml-16">
@@ -15,7 +15,7 @@ const ItemsShowCase = ({ items, title }: Props) => {
         {items
           ? items.map((item, index) => (
               <div key={index}>
-                <Item key={item.id} data={item} />
+                <ProductCard key={item.id} data={item} />
               </div>
             ))
           : null}
@@ -24,4 +24,4 @@ const ItemsShowCase = ({ items, title }: Props) => {
   );
 };
 
-export default ItemsShowCase;
+export default HomepageShowcase;

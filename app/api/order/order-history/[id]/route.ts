@@ -1,4 +1,5 @@
 import prisma from "@/prisma/db";
+
 import { NextRequest } from "next/server";
 
 export async function GET(
@@ -7,37 +8,30 @@ export async function GET(
 ) {
   try {
     const orders = await prisma.order.findMany({
+      select: {
+        beverage: {
+          select: {
+            name: true,
+            image: true,
+            price: true,
+          },
+        },
+        quantity: true,
+        orderAt: true,
+      },
       where: {
         phone: params.id,
       },
     });
 
-    if (orders.length === 0) {
-      return Response.json({ message: "no orders" }, { status: 200 });
-    }
-
-    const invoices = await Promise.all(
-      orders.map(async () => {
-        return await prisma.order.findMany({
-          select: {
-            beverage: {
-              select: {
-                name: true,
-                image: true,
-              },
-            },
-            orderAt: true,
-          },
-          where: {
-            phone: params.id,
-          },
-        });
-      })
-    );
+    const invoices = orders.map((order) => ({
+      ...order,
+      total: order.beverage.price * order.quantity,
+    }));
 
     return Response.json({ data: invoices }, { status: 200 });
   } catch (error: any) {
     console.log(error);
-    return Response.json({ message: "no data" }, { status: 406 });
+    return Response.json({ message: "no data" }, { status: 400 });
   }
 }

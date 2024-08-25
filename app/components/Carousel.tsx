@@ -57,7 +57,7 @@ const Carousel = () => {
         </div>
         <div id="slide4" className="carousel-item relative w-full h-[500px]">
           <Image
-            src="/4.png"
+            src="/5.png"
             layout="fill"
             objectFit="cover"
             quality={100}

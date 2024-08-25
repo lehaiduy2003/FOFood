@@ -1,49 +1,34 @@
 "use client";
 
+import { Restaurant } from "@prisma/client";
 import Carousel from "./components/Carousel";
-import Footer from "./components/Footer";
-import ItemsShowCase from "./components/homepage/ItemsShowCase";
-import NavBar from "./components/NavBar";
+import HomepageShowCase from "./components/HomepageShowCase";
+import Loading from "./components/ui/Loading";
 import { UseFetchData } from "./hooks/useFetchData";
-import { HomepageItem } from "./types/homeItem";
-
-interface FoodProps extends HomepageItem {
-  price: number;
-  description?: string;
-  orderCount?: number;
-}
-interface RestaurantProps extends HomepageItem {
-  user: { name: string };
-  address: string;
-  beverages: FoodProps[];
-}
-function useFetchData<T>(url: string): T[] | null {
-  return UseFetchData(url, "GET");
-}
 
 export default function Home() {
-  // const apiKey = UseFetchApiKey();
-  // setLocalItem("apiKey", apiKey);
-  // console.log(getLocalItem("apiKey"));
-
-  const restaurants = useFetchData<RestaurantProps>("api/home");
+  const { data: restaurants, loading } = UseFetchData<Restaurant>(
+    "api/home",
+    "GET"
+  );
 
   return (
     <>
-      <NavBar />
       <Carousel />
-      <main className="flex flex-col">
-        {restaurants
-          ? restaurants.map((restaurant, index) => (
-              <ItemsShowCase
-                key={index}
-                items={restaurant.beverages || []}
-                title={restaurant.name}
-              />
-            ))
-          : null}
+      <main className="flex flex-col min-h-[50vh] justify-center">
+        {loading ? (
+          <Loading />
+        ) : (
+          Array.isArray(restaurants) &&
+          restaurants.map((restaurant, index) => (
+            <HomepageShowCase
+              key={index}
+              items={restaurant.beverages || []}
+              title={restaurant.name}
+            />
+          ))
+        )}
       </main>
-      <Footer />
     </>
   );
 }

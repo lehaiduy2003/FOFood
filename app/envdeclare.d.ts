@@ -2,10 +2,11 @@
 /// <reference types="react" />
 declare namespace NodeJS {
   export interface ProcessEnv {
-    GOOGLE_CLIENT_ID: string;
-    HOSTNAME: string;
-    PORT: number;
+    AUTH_GOOGLE_ID: string;
+    AUTH_GOOGLE_SECRET: string;
+    NEXT_PUBLIC_HOSTNAME: string;
+    NEXT_PUBLIC_PORT: string;
     NEXT_PUBLIC_API_KEY: string;
-    // Add other environment variables as needed
+    // Declare other environment variables as needed
   }
 }
